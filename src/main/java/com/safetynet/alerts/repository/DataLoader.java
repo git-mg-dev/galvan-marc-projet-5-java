@@ -54,7 +54,7 @@ public class DataLoader {
                 medicalRecordAny.forEach(anyMedicalRecord -> {
                             String firstName = anyMedicalRecord.get("firstName").toString();
                             String lastName = anyMedicalRecord.get("lastName").toString();
-                            String birthDate = anyMedicalRecord.get("birthdate").toString(); // format: mm/dd/AAAA
+                            String birthDate = anyMedicalRecord.get("birthdate").toString();
 
                             // Medications
                             Any medicationAny = anyMedicalRecord.get("medications");
@@ -93,7 +93,7 @@ public class DataLoader {
                             } else {
                                 Firestation firestation = new Firestation();
                                 firestation.setId(firestationId);
-                                firestation.setHouseholdList(new ArrayList<>());
+                                firestation.setHouseholdList(new HashSet<>());
                                 firestation.getHouseholdList().add(householdMap.get(householdAddress));
 
                                 firestationMap.put(firestationId, firestation);

@@ -2,10 +2,10 @@ package com.safetynet.alerts.model;
 
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 public class Firestation {
     private int id;
-    private List<Household> householdList;
+    private Set<Household> householdList;
 }
