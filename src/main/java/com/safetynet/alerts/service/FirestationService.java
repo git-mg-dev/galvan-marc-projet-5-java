@@ -1,9 +1,6 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.model.Firestation;
-import com.safetynet.alerts.model.FirestationCoverageInfo;
-import com.safetynet.alerts.model.FirestationFireInfo;
-import com.safetynet.alerts.model.HouseholdIncident;
+import com.safetynet.alerts.model.*;
 import com.safetynet.alerts.repository.FirestationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,5 +31,13 @@ public class FirestationService {
 
     public List<HouseholdIncident> getHouseholdByFirestationNumber(List<Integer> firestationNumbers) {
         return firestationRepository.getHouseholdByFirestationNumber(firestationNumbers);
+    }
+
+    public Firestation saveFirestation(FirestationModifier firestationModifier) {
+        return firestationRepository.saveFirestation(firestationModifier);
+    }
+
+    public boolean deleteFirestation(FirestationModifier firestationModifier) {
+        return firestationRepository.deleteFirestation(firestationModifier);
     }
 }

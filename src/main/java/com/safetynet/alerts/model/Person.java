@@ -1,5 +1,6 @@
 package com.safetynet.alerts.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.DateTimeException;
@@ -8,6 +9,7 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
 @Data
+@AllArgsConstructor
 public class Person {
     private String firstName;
     private String lastName;

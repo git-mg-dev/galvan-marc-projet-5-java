@@ -107,4 +107,46 @@ public class FirestationRepository {
         }
         return result;
     }
+
+    /**
+     * Add a new firestation or add a new household to an existing firestation
+     * @param firestationToSave firestation with household to add
+     * @return added firestation
+     */
+    public Firestation saveFirestation(FirestationModifier firestationToSave) {
+
+        // Checks if firestation already exists and add a new household
+        for (Firestation firestation : firestations) {
+            if(firestation.getId() == firestationToSave.getId()) {
+                firestation.getHouseholdList().add(firestationToSave.getHousehold());
+                return firestation;
+            }
+        }
+
+        // Creates new firestation
+        Firestation newFirestation = new Firestation(firestationToSave.getId(), new HashSet<>());
+        newFirestation.getHouseholdList().add(firestationToSave.getHousehold());
+        firestations.add(newFirestation);
+        return newFirestation;
+    }
+
+    /**
+     * Remove a household from a firestation
+     * @param firestationToDelete firestation and household to remove
+     * @return true if removed, else false
+     */
+    public boolean deleteFirestation(FirestationModifier firestationToDelete) {
+
+        for (Firestation firestation : firestations) {
+            if(firestation.getId() == firestationToDelete.getId()) {
+                for(Household household : firestation.getHouseholdList()) {
+                    if(household.getAddress().equalsIgnoreCase(firestationToDelete.getHousehold().getAddress())) {
+                        firestation.getHouseholdList().remove(household);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }

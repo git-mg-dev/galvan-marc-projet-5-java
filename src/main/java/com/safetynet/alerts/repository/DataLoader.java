@@ -27,16 +27,19 @@ public class DataLoader {
                 // Load people & households
                 Any personAny = any.get("persons");
                 personAny.forEach(anyPerson -> {
-                        Person person = new Person();
-                        person.setFirstName(anyPerson.get("firstName").toString());
-                        person.setLastName(anyPerson.get("lastName").toString());
-                        person.setEmail(anyPerson.get("email").toString());
-                        person.setPhone(anyPerson.get("phone").toString());
+                        Person person = new Person(anyPerson.get("firstName").toString(),
+                                anyPerson.get("lastName").toString(),
+                                anyPerson.get("email").toString(),
+                                anyPerson.get("phone").toString(),
+                                "",
+                                new MedicalRecord(new ArrayList<>(), new ArrayList<>())
+                        );
 
-                        Household household = new Household();
-                        household.setAddress(anyPerson.get("address").toString());
-                        household.setZipCode(anyPerson.get("zip").toString());
-                        household.setCity(anyPerson.get("city").toString());
+                        Household household = new Household(anyPerson.get("address").toString(),
+                                anyPerson.get("zip").toString(),
+                                anyPerson.get("city").toString(),
+                                new ArrayList<>()
+                        );
 
                         if(householdMap.containsKey(household.getAddress())) {
                             householdMap.get(household.getAddress()).getPersonList().add(person);
@@ -71,7 +74,7 @@ public class DataLoader {
                                 for(Person person : householdMap.get(address).getPersonList()) {
                                     if(person.getFirstName().equals(firstName) && person.getLastName().equals(lastName)) {
                                         person.setBirthDay(birthDate);
-                                        MedicalRecord medicalRecord = new MedicalRecord();
+                                        MedicalRecord medicalRecord = new MedicalRecord(allergies, medications);
                                         medicalRecord.setAllergies(allergies);
                                         medicalRecord.setMedications(medications);
                                         person.setMedicalRecord(medicalRecord);
@@ -91,9 +94,7 @@ public class DataLoader {
                             if(firestationMap.containsKey(firestationId)) {
                                 firestationMap.get(firestationId).getHouseholdList().add(householdMap.get(householdAddress));
                             } else {
-                                Firestation firestation = new Firestation();
-                                firestation.setId(firestationId);
-                                firestation.setHouseholdList(new HashSet<>());
+                                Firestation firestation = new Firestation(firestationId, new HashSet<>());
                                 firestation.getHouseholdList().add(householdMap.get(householdAddress));
 
                                 firestationMap.put(firestationId, firestation);

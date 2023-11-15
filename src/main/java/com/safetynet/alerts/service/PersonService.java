@@ -1,7 +1,9 @@
 package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.model.Child;
+import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.model.PersonInfo;
+import com.safetynet.alerts.model.PersonWithAddress;
 import com.safetynet.alerts.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,4 +27,17 @@ public class PersonService {
     public List<PersonInfo> getPersonInfo(String firstName, String lastName) {
         return personRepository.getPersonInfo(firstName, lastName);
     }
+
+    public Person addPerson(PersonWithAddress personWithAddress) {
+        return personRepository.addPerson(personWithAddress);
+    }
+
+    public Person updatePerson(Person person) {
+        return personRepository.updatePerson(person);
+    }
+
+    public boolean deletePerson(Person person) {
+        return personRepository.deletePerson(person);
+    }
+
 }

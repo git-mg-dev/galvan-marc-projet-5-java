@@ -1,18 +1,20 @@
 package com.safetynet.alerts.controller;
 
-import com.safetynet.alerts.model.FirestationCoverageInfo;
-import com.safetynet.alerts.model.FirestationFireInfo;
-import com.safetynet.alerts.model.HouseholdIncident;
+import com.safetynet.alerts.exceptions.FirestationNotFoundException;
+import com.safetynet.alerts.model.*;
 import com.safetynet.alerts.service.FirestationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
 
-@Controller
+@RestController
 public class FirestationController {
 
     @Autowired
@@ -42,6 +44,38 @@ public class FirestationController {
         return firestationService.getHouseholdByFirestationNumber(stations);
     }
 
-    // C(R)UD operations
-    // TODO
+    @PostMapping("firestation")
+    public HttpEntity<Firestation> addFirestation(@RequestBody FirestationModifier firestationModifier) throws URISyntaxException {
+        Firestation addedFirestation = firestationService.saveFirestation(firestationModifier);
+
+        if(Objects.isNull(addedFirestation)) {
+            return ResponseEntity.noContent().build();
+        } else {
+            URI firestationUri = new URI("firestation");
+            URI redirect = ServletUriComponentsBuilder
+                    .fromUri(firestationUri)
+                    .query("stationNumber={stationNumber}")
+                    .buildAndExpand(addedFirestation.getId())
+                    .toUri();
+            return ResponseEntity.created(redirect).build();
+        }
+    }
+
+    @PutMapping("firestation")
+    public void updateFirestation(@RequestBody FirestationModifier firestation) {
+        Firestation updatedFirestation = firestationService.saveFirestation(firestation);
+
+        if(Objects.isNull(updatedFirestation)) {
+            throw new FirestationNotFoundException("Firestation with id " + firestation.getId() +" was not found, it has not been updated");
+        }
+    }
+
+    @DeleteMapping("firestation")
+    public void deleteFirestation(@RequestBody FirestationModifier firestation) {
+        boolean firestationDeleted = firestationService.deleteFirestation(firestation);
+
+        if(!firestationDeleted) {
+            throw new FirestationNotFoundException("Firestation with id " + firestation.getId() +" was not found.");
+        }
+    }
 }

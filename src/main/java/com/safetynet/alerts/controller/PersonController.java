@@ -1,17 +1,20 @@
 package com.safetynet.alerts.controller;
 
-import com.safetynet.alerts.model.Child;
-import com.safetynet.alerts.model.PersonInfo;
+import com.safetynet.alerts.exceptions.PersonNotFoundException;
+import com.safetynet.alerts.model.*;
 import com.safetynet.alerts.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
 
-@Controller
+@RestController
 public class PersonController {
     @Autowired
     private PersonService personService;
@@ -34,7 +37,39 @@ public class PersonController {
         return personService.getPersonInfo(firstName, lastName);
     }
 
-    // C(R)UD operations
-    // TODO
+    @PostMapping("person")
+    public HttpEntity<Person> addPerson(@RequestBody PersonWithAddress personWithAddress) throws URISyntaxException {
+        Person personAdded = personService.addPerson(personWithAddress);
 
+        if(Objects.isNull(personAdded)) {
+            return ResponseEntity.noContent().build();
+        } else {
+            URI personInfoUri = new URI("personInfo");
+            URI redirect = ServletUriComponentsBuilder
+                    .fromUri(personInfoUri)
+                    .query("firstName={firstName}")
+                    .query("lastName={lastName}")
+                    .buildAndExpand(personAdded.getFirstName(), personAdded.getLastName())
+                    .toUri();
+            return ResponseEntity.created(redirect).build();
+        }
+    }
+
+    @PutMapping("person")
+    public void updatePerson(@RequestBody Person person) {
+        Person personModified = personService.updatePerson(person);
+
+        if(Objects.isNull(personModified)) {
+            throw new PersonNotFoundException(person.getFirstName() + " " + person.getLastName() + " was not found. Their info has not been updated");
+        }
+    }
+
+    @DeleteMapping("person")
+    public void deletePerson(@RequestBody Person person) {
+        boolean medicalRecordDeleted = personService.deletePerson(person);
+
+        if(!medicalRecordDeleted) {
+            throw new PersonNotFoundException(person.getFirstName() + " " + person.getLastName() + " was not found.");
+        }
+    }
 }

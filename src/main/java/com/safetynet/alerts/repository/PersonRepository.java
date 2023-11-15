@@ -96,4 +96,68 @@ public class PersonRepository {
 
         return personInfoSet.stream().toList();
     }
+
+    /**
+     * Add a person in the household at a specific address
+     * @param personWithAddress person to add and address to add it in
+     * @return
+     */
+    public Person addPerson(PersonWithAddress personWithAddress) {
+
+        for (Firestation firestation : firestations) {
+            for (Household household : firestation.getHouseholdList()) {
+                if (household.getAddress().equalsIgnoreCase(personWithAddress.getAddress())) {
+                    Person newPerson = personWithAddress;
+                    household.getPersonList().add(newPerson);
+                    return newPerson;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Update a person data
+     * @param personToUpdate person to update
+     * @return person updated
+     */
+    public Person updatePerson(Person personToUpdate) {
+
+        for (Firestation firestation : firestations) {
+            for (Household household : firestation.getHouseholdList()) {
+                for (Person person : household.getPersonList()) {
+                    if(person.getFirstName().equalsIgnoreCase(personToUpdate.getFirstName()) &&
+                    person.getLastName().equalsIgnoreCase(personToUpdate.getLastName())) {
+                        person.setEmail(personToUpdate.getEmail());
+                        person.setPhone(personToUpdate.getPhone());
+                        person.setBirthDay(personToUpdate.getBirthDay());
+                        person.setMedicalRecord(personToUpdate.getMedicalRecord());
+                        return person;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Remove a person from a household
+     * @param personToDelete person to remove
+     * @return true if removed, else false
+     */
+    public boolean deletePerson(Person personToDelete) {
+
+        for (Firestation firestation : firestations) {
+            for (Household household : firestation.getHouseholdList()) {
+                for (Person person : household.getPersonList()) {
+                    if(person.getFirstName().equalsIgnoreCase(personToDelete.getFirstName()) &&
+                            person.getLastName().equalsIgnoreCase(personToDelete.getLastName())) {
+                        household.getPersonList().remove(person);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
