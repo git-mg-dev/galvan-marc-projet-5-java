@@ -3,6 +3,7 @@ package com.safetynet.alerts.controller;
 import com.safetynet.alerts.exceptions.FirestationNotFoundException;
 import com.safetynet.alerts.model.*;
 import com.safetynet.alerts.service.FirestationService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 
+@Log4j2
 @RestController
 public class FirestationController {
 
@@ -49,8 +51,13 @@ public class FirestationController {
         Firestation addedFirestation = firestationService.saveFirestation(firestationModifier);
 
         if(Objects.isNull(addedFirestation)) {
+            log.error("Mapping adding failed for firestation " + firestationModifier.getId() + " and household "
+                    + firestationModifier.getHousehold().getAddress());
             return ResponseEntity.noContent().build();
         } else {
+            log.info("Mapping was added with success for firestation " + firestationModifier.getId() + " and household "
+                    + firestationModifier.getHousehold().getAddress());
+
             URI firestationUri = new URI("firestation");
             URI redirect = ServletUriComponentsBuilder
                     .fromUri(firestationUri)
@@ -62,20 +69,32 @@ public class FirestationController {
     }
 
     @PutMapping("firestation")
-    public void updateFirestation(@RequestBody FirestationModifier firestation) {
-        Firestation updatedFirestation = firestationService.saveFirestation(firestation);
+    public void updateFirestation(@RequestBody FirestationModifier firestationModifier) {
+        Firestation updatedFirestation = firestationService.saveFirestation(firestationModifier);
 
         if(Objects.isNull(updatedFirestation)) {
-            throw new FirestationNotFoundException("Firestation with id " + firestation.getId() +" was not found, it has not been updated");
+            String message = "Mapping update failed for firestation " + firestationModifier.getId() + " and household "
+                    + firestationModifier.getHousehold().getAddress();
+            log.error(message);
+            throw new FirestationNotFoundException(message);
+        } else {
+            log.info("Mapping updated with success for firestation " + firestationModifier.getId() + " and household "
+                    + firestationModifier.getHousehold().getAddress());
         }
     }
 
     @DeleteMapping("firestation")
-    public void deleteFirestation(@RequestBody FirestationModifier firestation) {
-        boolean firestationDeleted = firestationService.deleteFirestation(firestation);
+    public void deleteFirestation(@RequestBody FirestationModifier firestationModifier) {
+        boolean firestationDeleted = firestationService.deleteFirestation(firestationModifier);
 
         if(!firestationDeleted) {
-            throw new FirestationNotFoundException("Firestation with id " + firestation.getId() +" was not found.");
+            String message = "Mapping delete failed for firestation " + firestationModifier.getId() + " and household "
+                    + firestationModifier.getHousehold().getAddress();
+            log.error(message);
+            throw new FirestationNotFoundException(message);
+        } else {
+            log.info("Mapping updated with success for firestation " + firestationModifier.getId() + " and household "
+                    + firestationModifier.getHousehold().getAddress());
         }
     }
 }

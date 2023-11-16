@@ -4,6 +4,7 @@ import com.safetynet.alerts.exceptions.PersonNotFoundException;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.MedicalRecordModifier;
 import com.safetynet.alerts.service.MedicalRecordService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
+@Log4j2
 @RestController
 public class MedicalRecordController {
 
@@ -25,8 +27,13 @@ public class MedicalRecordController {
         MedicalRecord medicalRecordAdded = medicalRecordService.saveMedicalRecord(medicalRecordModifier);
 
         if(Objects.isNull(medicalRecordAdded)) {
+            log.error("Medical record adding failed for " + medicalRecordModifier.getFirstName() + " "
+                    + medicalRecordModifier.getLastName());
             return ResponseEntity.noContent().build();
         } else {
+            log.info("Medical record was added with success for " + medicalRecordModifier.getFirstName() + " "
+                    + medicalRecordModifier.getLastName());
+
             URI personInfoUri = new URI("personInfo");
             URI redirect = ServletUriComponentsBuilder
                     .fromUri(personInfoUri)
@@ -43,7 +50,13 @@ public class MedicalRecordController {
         MedicalRecord medicalRecordModified = medicalRecordService.saveMedicalRecord(medicalRecordModifier);
 
         if(Objects.isNull(medicalRecordModified)) {
-            throw new PersonNotFoundException(medicalRecordModifier.getFirstName() + " " + medicalRecordModifier.getLastName() + " was not found.");
+            String message = "Medical record update failed, " + medicalRecordModifier.getFirstName() + " "
+                    + medicalRecordModifier.getLastName() + " was not found.";
+            log.error(message);
+            throw new PersonNotFoundException(message);
+        } else {
+            log.info("Medical record was updated with success for " + medicalRecordModifier.getFirstName() + " "
+                    + medicalRecordModifier.getLastName());
         }
     }
 
@@ -52,7 +65,13 @@ public class MedicalRecordController {
         boolean medicalRecordDeleted = medicalRecordService.deleteMedicalRecord(medicalRecordModifier);
 
         if(!medicalRecordDeleted) {
-            throw new PersonNotFoundException(medicalRecordModifier.getFirstName() + " " + medicalRecordModifier.getLastName() + " was not found.");
+            String message = "Medical record delete failed, " + medicalRecordModifier.getFirstName() + " "
+                    + medicalRecordModifier.getLastName() + " was not found.";
+            log.error(message);
+            throw new PersonNotFoundException(message);
+        } else {
+            log.info("Medical record was deleted with success for " + medicalRecordModifier.getFirstName() + " "
+                    + medicalRecordModifier.getLastName());
         }
     }
 }

@@ -1,13 +1,13 @@
 package com.safetynet.alerts.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.experimental.SuperBuilder;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 public class MedicalRecord {
     private List<String> allergies;

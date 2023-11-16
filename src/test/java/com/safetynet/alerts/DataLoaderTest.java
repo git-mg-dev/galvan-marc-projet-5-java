@@ -14,7 +14,7 @@ public class DataLoaderTest {
     private List<Firestation> firestations;
 
     @Test
-    public void dataLoadingTest() {
+    public void dataLoading_Test() {
         // GIVEN +  WHEN
         firestations = DataLoader.LoadDataFromFile("src/main/resources/data.json");
 
@@ -23,7 +23,7 @@ public class DataLoaderTest {
     }
 
     @Test
-    public void dataLoadingNotWorkingTest() {
+    public void dataLoadingNotWorking_Test() {
         // GIVEN +  WHEN
         firestations = DataLoader.LoadDataFromFile("src/main/resources/nodata.json");
 

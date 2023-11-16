@@ -2,20 +2,17 @@ package com.safetynet.alerts.repository;
 
 import com.safetynet.alerts.model.*;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @Repository
 public class MedicalRecordRepository {
 
-    private List<Firestation> firestations;
-
-    public MedicalRecordRepository() {
-        firestations = DataLoader.LoadDataFromFile("src/main/resources/data.json");
-    }
+    @Autowired
+    private DataRepository dataRepository;
 
     /**
      * Saves changes in medical records of a person
@@ -24,10 +21,11 @@ public class MedicalRecordRepository {
      */
     public MedicalRecord saveMedicalRecord(MedicalRecordModifier medicalRecordModifier) {
 
-        for (Firestation firestation : firestations) {
+        for (Firestation firestation : dataRepository.getFirestationList()) {
             for (Household household : firestation.getHouseholdList()) {
                 for (Person person : household.getPersonList()) {
-                    if(person.getFirstName().equalsIgnoreCase(medicalRecordModifier.getFirstName()) && person.getLastName().equalsIgnoreCase(medicalRecordModifier.getLastName())) {
+                    if(person.getFirstName().equalsIgnoreCase(medicalRecordModifier.getFirstName())
+                            && person.getLastName().equalsIgnoreCase(medicalRecordModifier.getLastName())) {
                         person.getMedicalRecord().setAllergies(medicalRecordModifier.getAllergies());
                         person.getMedicalRecord().setMedications(medicalRecordModifier.getMedications());
                         return person.getMedicalRecord();
@@ -48,6 +46,10 @@ public class MedicalRecordRepository {
         medicalRecordModifier.setMedications(new ArrayList<>());
         MedicalRecord result = saveMedicalRecord(medicalRecordModifier);
 
-        return (result.getMedications().isEmpty() && result.getAllergies().isEmpty());
+        if(result != null) {
+            return (result.getMedications().isEmpty() && result.getAllergies().isEmpty());
+        } else {
+            return false;
+        }
     }
 }

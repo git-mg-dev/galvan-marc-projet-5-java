@@ -1,8 +1,8 @@
 package com.safetynet.alerts.model;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class PersonInfo {
     private String lastName;
     private String address;

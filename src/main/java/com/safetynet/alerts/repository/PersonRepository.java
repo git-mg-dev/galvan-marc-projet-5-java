@@ -2,19 +2,16 @@ package com.safetynet.alerts.repository;
 
 import com.safetynet.alerts.model.*;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
-@Data
 @Repository
 public class PersonRepository {
 
-    private List<Firestation> firestations;
-
-    public PersonRepository() {
-        firestations = DataLoader.LoadDataFromFile("src/main/resources/data.json");
-    }
+    @Autowired
+    private DataRepository dataRepository;
 
     /**
      * Get emails of all the people living in a given city
@@ -24,7 +21,7 @@ public class PersonRepository {
     public List<String> getAllEmailByCity(String city) {
         List<String> emails = new ArrayList<>();
 
-        for (Firestation firestation : firestations) {
+        for (Firestation firestation : dataRepository.getFirestationList()) {
             for(Household household : firestation.getHouseholdList()) {
                 if(household.getCity().equalsIgnoreCase(city)) {
                     for (Person person : household.getPersonList()) {
@@ -43,7 +40,7 @@ public class PersonRepository {
      */
     public List<Child> getChildrenByAddress(String address) {
 
-        for (Firestation firestation : firestations) {
+        for (Firestation firestation : dataRepository.getFirestationList()) {
             for(Household household : firestation.getHouseholdList()) {
                 if(household.getAddress().equalsIgnoreCase(address)) {
                     Map<String, Child> childrenMap = new HashMap<>();
@@ -83,10 +80,11 @@ public class PersonRepository {
     public List<PersonInfo> getPersonInfo(String firstName, String lastName) {
         Set<PersonInfo> personInfoSet = new HashSet<>();
 
-        for (Firestation firestation : firestations) {
+        for (Firestation firestation : dataRepository.getFirestationList()) {
             for(Household household : firestation.getHouseholdList()) {
                 for (Person person : household.getPersonList()) {
-                    if(person.getFirstName().equalsIgnoreCase(firstName) && person.getLastName().equalsIgnoreCase(lastName)) {
+                    if(person.getFirstName().equalsIgnoreCase(firstName)
+                            && person.getLastName().equalsIgnoreCase(lastName)) {
                         PersonInfo personInfo = new PersonInfo(person, household.getAddress());
                         personInfoSet.add(personInfo);
                     }
@@ -104,7 +102,7 @@ public class PersonRepository {
      */
     public Person addPerson(PersonWithAddress personWithAddress) {
 
-        for (Firestation firestation : firestations) {
+        for (Firestation firestation : dataRepository.getFirestationList()) {
             for (Household household : firestation.getHouseholdList()) {
                 if (household.getAddress().equalsIgnoreCase(personWithAddress.getAddress())) {
                     Person newPerson = personWithAddress;
@@ -123,7 +121,7 @@ public class PersonRepository {
      */
     public Person updatePerson(Person personToUpdate) {
 
-        for (Firestation firestation : firestations) {
+        for (Firestation firestation : dataRepository.getFirestationList()) {
             for (Household household : firestation.getHouseholdList()) {
                 for (Person person : household.getPersonList()) {
                     if(person.getFirstName().equalsIgnoreCase(personToUpdate.getFirstName()) &&
@@ -147,7 +145,7 @@ public class PersonRepository {
      */
     public boolean deletePerson(Person personToDelete) {
 
-        for (Firestation firestation : firestations) {
+        for (Firestation firestation : dataRepository.getFirestationList()) {
             for (Household household : firestation.getHouseholdList()) {
                 for (Person person : household.getPersonList()) {
                     if(person.getFirstName().equalsIgnoreCase(personToDelete.getFirstName()) &&

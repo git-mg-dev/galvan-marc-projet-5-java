@@ -1,6 +1,7 @@
 package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.model.*;
+import com.safetynet.alerts.repository.DataRepository;
 import com.safetynet.alerts.repository.FirestationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,6 @@ public class FirestationService {
 
     @Autowired
     FirestationRepository firestationRepository;
-
-    public List<Firestation> getFirestations() {
-        return firestationRepository.getFirestations();
-    }
 
     public List<String> getAllPhoneNumberByStationNumber(int firestationNumber) {
         return firestationRepository.getAllPhoneNumberByStationNumber(firestationNumber);

@@ -1,11 +1,11 @@
 package com.safetynet.alerts.model;
 
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
 public class HouseholdIncident {
     private String address;
     private List<PersonIncidentInfo> personList;

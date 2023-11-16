@@ -1,9 +1,8 @@
 package com.safetynet.alerts.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class MedicalRecordModifier extends MedicalRecord{
     private String firstName;
     private String lastName;

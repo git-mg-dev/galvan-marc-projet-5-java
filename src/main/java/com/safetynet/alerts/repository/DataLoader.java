@@ -6,12 +6,14 @@ import com.safetynet.alerts.model.Household;
 import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 
+@Log4j2
 public class DataLoader {
     public static List<Firestation> LoadDataFromFile(String filePath) {
         Map<Integer, Firestation> firestationMap = new HashMap<>();
@@ -19,6 +21,7 @@ public class DataLoader {
 
         if(!filePath.isEmpty()) {
             try {
+                log.debug("Starting loading data from file " + filePath);
                 byte[] fileContent = Files.readAllBytes(new File(filePath).toPath());
 
                 JsonIterator jsonIterator = JsonIterator.parse(fileContent);
@@ -100,15 +103,14 @@ public class DataLoader {
                                 firestationMap.put(firestationId, firestation);
                             }
                         } else {
-                            // TODO : log message
-                            System.err.println("Firestation " + firestationId + " can't be attached to address " + householdAddress);
+                            log.error("Firestation " + firestationId + " can't be attached to address " + householdAddress);
                         }
                     }
                 );
 
             } catch (IOException e) {
-                System.err.println(e.getMessage());
-                // TODO: log message
+                log.error("Couldn't read file " + filePath);
+                log.debug(e.getMessage());
             }
         }
 

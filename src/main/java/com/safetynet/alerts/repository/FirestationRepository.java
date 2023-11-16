@@ -2,19 +2,16 @@ package com.safetynet.alerts.repository;
 
 import com.safetynet.alerts.model.*;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
-@Data
 @Repository
 public class FirestationRepository {
 
-    private List<Firestation> firestations;
-
-    public FirestationRepository() {
-        firestations = DataLoader.LoadDataFromFile("src/main/resources/data.json");
-    }
+    @Autowired
+    private DataRepository dataRepository;
 
     /**
      * Get all phone numbers of the people linked to a firestation
@@ -24,7 +21,7 @@ public class FirestationRepository {
     public List<String> getAllPhoneNumberByStationNumber(int firestationNumber) {
         List<String> phoneNumbers = new ArrayList<>();
 
-        for(Firestation firestation : firestations) {
+        for(Firestation firestation : dataRepository.getFirestationList()) {
             if(firestation.getId() == firestationNumber) {
                 for (Household household : firestation.getHouseholdList()) {
                     for (Person person : household.getPersonList()) {
@@ -45,7 +42,7 @@ public class FirestationRepository {
         FirestationCoverageInfo result = new FirestationCoverageInfo();
         result.setPersonList(new ArrayList<>());
 
-        for (Firestation firestation : firestations) {
+        for (Firestation firestation : dataRepository.getFirestationList()) {
             if(firestation.getId() == firestationNumber) {
                 for(Household household : firestation.getHouseholdList()) {
                     for (Person person : household.getPersonList()) {
@@ -72,7 +69,7 @@ public class FirestationRepository {
         Set<PersonIncidentInfo> contactList = new HashSet<>();
         Set<Integer> firestationNumberList = new HashSet<>();
 
-        for (Firestation firestation : firestations) {
+        for (Firestation firestation : dataRepository.getFirestationList()) {
             for (Household household : firestation.getHouseholdList()) {
                 if(household.getAddress().equalsIgnoreCase(address)) {
                     for (Person person : household.getPersonList()) {
@@ -97,7 +94,7 @@ public class FirestationRepository {
         List<HouseholdIncident> result = new ArrayList<>();
 
         for(Integer firestationNumber : firestationNumbers) {
-            for(Firestation firestation : firestations) {
+            for(Firestation firestation : dataRepository.getFirestationList()) {
                 if(firestationNumber == firestation.getId()) {
                     for(Household household : firestation.getHouseholdList()) {
                         result.add(new HouseholdIncident(household));
@@ -115,19 +112,24 @@ public class FirestationRepository {
      */
     public Firestation saveFirestation(FirestationModifier firestationToSave) {
 
-        // Checks if firestation already exists and add a new household
-        for (Firestation firestation : firestations) {
-            if(firestation.getId() == firestationToSave.getId()) {
-                firestation.getHouseholdList().add(firestationToSave.getHousehold());
-                return firestation;
+        if(firestationToSave.getHousehold().getAddress() != null
+                && !firestationToSave.getHousehold().getAddress().isEmpty()) {
+            // Checks if firestation already exists and add a new household
+            for (Firestation firestation : dataRepository.getFirestationList()) {
+                if (firestation.getId() == firestationToSave.getId()) {
+                    firestation.getHouseholdList().add(firestationToSave.getHousehold());
+                    return firestation;
+                }
             }
-        }
 
-        // Creates new firestation
-        Firestation newFirestation = new Firestation(firestationToSave.getId(), new HashSet<>());
-        newFirestation.getHouseholdList().add(firestationToSave.getHousehold());
-        firestations.add(newFirestation);
-        return newFirestation;
+            // Creates new firestation
+            Firestation newFirestation = new Firestation(firestationToSave.getId(), new HashSet<>());
+            newFirestation.getHouseholdList().add(firestationToSave.getHousehold());
+            dataRepository.getFirestationList().add(newFirestation);
+            return newFirestation;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -137,7 +139,7 @@ public class FirestationRepository {
      */
     public boolean deleteFirestation(FirestationModifier firestationToDelete) {
 
-        for (Firestation firestation : firestations) {
+        for (Firestation firestation : dataRepository.getFirestationList()) {
             if(firestation.getId() == firestationToDelete.getId()) {
                 for(Household household : firestation.getHouseholdList()) {
                     if(household.getAddress().equalsIgnoreCase(firestationToDelete.getHousehold().getAddress())) {
