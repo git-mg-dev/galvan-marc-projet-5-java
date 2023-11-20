@@ -2,12 +2,14 @@ package com.safetynet.alerts.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.log4j.Log4j2;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
+@Log4j2
 @Data
 @AllArgsConstructor
 public class Person {
@@ -30,8 +32,8 @@ public class Person {
             LocalDate currentDate = LocalDate.now();
             age = Period.between(dob, currentDate).getYears();
         } catch (DateTimeException e) {
-            System.err.println(e.getMessage());
-            // TODO log message
+            log.error("Failed to calculate age for " + firstName + " " + lastName + " (dob: "+ birthDay +")");
+            log.debug(e.getMessage());
         }
 
         return age;

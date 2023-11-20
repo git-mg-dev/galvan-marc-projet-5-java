@@ -7,14 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.springframework.http.RequestEntity.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -78,7 +77,7 @@ public class FirestationControllerTest {
                 .andExpect(content().string(containsString("tradoxidine")));
 
     }
-/*
+
     @Test
     public void addFirestation_Test() throws Exception {
         // GIVEN
@@ -91,11 +90,111 @@ public class FirestationControllerTest {
         String requestBody = mapper.writeValueAsString(firestationModifier);
 
         // WHEN + THEN
-        mockMvc.perform(post("http://localhost:8080/firestation")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("http://localhost:8080/firestation")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
 
     }
-*/
+
+    @Test
+    public void addFirestation_Fail_Test() throws Exception {
+        // GIVEN
+        Household household = new Household("", "", "", new ArrayList<>());
+        FirestationModifier firestationModifier = new FirestationModifier();
+        firestationModifier.setId(9);
+        firestationModifier.setHousehold(household);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String requestBody = mapper.writeValueAsString(firestationModifier);
+
+        // WHEN + THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("http://localhost:8080/firestation")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
+
+    }
+
+    @Test
+    public void updateFirestation_Test() throws Exception {
+        // GIVEN
+        Household household = new Household("102 Culver St", "97451", "Culver", new ArrayList<>());
+        FirestationModifier firestationModifier = new FirestationModifier();
+        firestationModifier.setId(4);
+        firestationModifier.setHousehold(household);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String requestBody = mapper.writeValueAsString(firestationModifier);
+
+        // WHEN + THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("http://localhost:8080/firestation")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
+
+    }
+
+    @Test
+    public void updateFirestation_Fail_Test() throws Exception {
+        // GIVEN
+        Household household = new Household("", "97451", "Culver", new ArrayList<>());
+        FirestationModifier firestationModifier = new FirestationModifier();
+        firestationModifier.setId(7);
+        firestationModifier.setHousehold(household);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String requestBody = mapper.writeValueAsString(firestationModifier);
+
+        // WHEN + THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("http://localhost:8080/firestation")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+
+    }
+
+    @Test
+    public void deleteFirestation_Test() throws Exception {
+        // GIVEN
+        Household household = new Household("489 Manchester St", "97451", "Culver", new ArrayList<>());
+        FirestationModifier firestationModifier = new FirestationModifier();
+        firestationModifier.setId(4);
+        firestationModifier.setHousehold(household);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String requestBody = mapper.writeValueAsString(firestationModifier);
+
+        // WHEN + THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("http://localhost:8080/firestation")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
+
+    }
+
+    @Test
+    public void deleteFirestation_Fail_Test() throws Exception {
+        // GIVEN
+        Household household = new Household("2 Manchester St", "97451", "Culver", new ArrayList<>());
+        FirestationModifier firestationModifier = new FirestationModifier();
+        firestationModifier.setId(4);
+        firestationModifier.setHousehold(household);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String requestBody = mapper.writeValueAsString(firestationModifier);
+
+        // WHEN + THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("http://localhost:8080/firestation")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+
+    }
 }

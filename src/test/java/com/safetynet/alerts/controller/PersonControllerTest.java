@@ -1,10 +1,17 @@
 package com.safetynet.alerts.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.safetynet.alerts.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,8 +34,8 @@ public class PersonControllerTest {
         mockMvc.perform(get("http://localhost:8080/communityEmail?city="+city))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("reg@email.com")))
-                .andExpect(content().string(containsString("lily@email.com")));
+                .andExpect(content().string(containsString("bstel@email.com")))
+                .andExpect(content().string(containsString("aly@imail.com")));
 
     }
 
@@ -59,6 +66,124 @@ public class PersonControllerTest {
                 .andExpect(content().string(containsString("jaboyd@email.com")))
                 .andExpect(content().string(containsString("tetracyclaz")))
                 .andExpect(content().string(containsString("xilliathal")));
+
+    }
+
+    @Test
+    public void addPerson_Test() throws Exception {
+        // GIVEN
+        String requestBody = "{" +
+                "\"address\":\"908 73rd St\"," +
+                "\"person\":{" +
+                    "\"firstName\":\"Joan\"," +
+                    "\"lastName\":\"Peters\"," +
+                    "\"email\":\"joanpeter@email.com\"," +
+                    "\"phone\":\"841-874-7463\"," +
+                    "\"birthDay\":\"03/05/1992\"," +
+                    "\"medicalRecord\":{\"allergies\":[],\"medications\":[]}" +
+                "}" +
+                "}";
+
+        // WHEN + THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("http://localhost:8080/person")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void addPerson_Fail_Test() throws Exception {
+        // GIVEN
+        String requestBody = "{" +
+                "\"address\":\"9080 73rd St\"," +
+                "\"person\":{" +
+                "\"firstName\":\"Alicia\"," +
+                "\"lastName\":\"Peters\"," +
+                "\"email\":\"aliciapeter@email.com\"," +
+                "\"phone\":\"841-874-7464\"," +
+                "\"birthDay\":\"03/10/1994\"," +
+                "\"medicalRecord\":{\"allergies\":[],\"medications\":[]}" +
+                "}" +
+                "}";
+
+        // WHEN + THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("http://localhost:8080/person")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    public void updatePerson_Test() throws Exception {
+        // GIVEN
+        Person personToUpdate = new Person("Jamie","Peters","jpeter@email.com",
+                "841-874-7462","03/06/1982", new MedicalRecord(new ArrayList<>(), new ArrayList<>()));
+        personToUpdate.getMedicalRecord().getAllergies().add("peanuts");
+
+        ObjectMapper mapper = new ObjectMapper();
+        String requestBody = mapper.writeValueAsString(personToUpdate);
+
+        // WHEN + THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("http://localhost:8080/person")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    public void updatePerson_Fail_Test() throws Exception {
+        // GIVEN
+        Person personToUpdate = new Person("Wallas","Peters","wpeter@email.com",
+                "841-874-7462","03/06/1982", new MedicalRecord(new ArrayList<>(), new ArrayList<>()));
+        personToUpdate.getMedicalRecord().getAllergies().add("peanuts");
+
+        ObjectMapper mapper = new ObjectMapper();
+        String requestBody = mapper.writeValueAsString(personToUpdate);
+
+        // WHEN + THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("http://localhost:8080/person")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void deletePerson_Test() throws Exception {
+        // GIVEN
+        Person personToDelete = new Person("Shawna","Stelzer","ssanw@email.com",
+                "841-874-7784","07/08/1980", new MedicalRecord(new ArrayList<>(), new ArrayList<>()));
+
+        ObjectMapper mapper = new ObjectMapper();
+        String requestBody = mapper.writeValueAsString(personToDelete);
+
+        // WHEN + THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("http://localhost:8080/person")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
+
+    }
+
+    @Test
+    public void deletePerson_Fail_Test() throws Exception {
+        // GIVEN
+        Person personToDelete = new Person("Charles","Stelzer","csanw@email.com",
+                "841-874-7784","07/08/1980", new MedicalRecord(new ArrayList<>(), new ArrayList<>()));
+
+        ObjectMapper mapper = new ObjectMapper();
+        String requestBody = mapper.writeValueAsString(personToDelete);
+
+        // WHEN + THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("http://localhost:8080/person")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
 
     }
 }

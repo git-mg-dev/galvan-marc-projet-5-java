@@ -97,9 +97,9 @@ public class FirestationServiceTest {
     @Test
     public void addNewFirestation_Test() {
         // GIVEN
-        Household household = new Household("100 Culver St", "97451", "Culver", new ArrayList<>());
+        Household household = new Household("110 Culver St", "97451", "Culver", new ArrayList<>());
         FirestationModifier firestation = new FirestationModifier();
-        firestation.setId(9);
+        firestation.setId(8);
         firestation.setHousehold(household);
 
         // WHEN
@@ -132,9 +132,9 @@ public class FirestationServiceTest {
     }
 
     @Test
-    public void deleteFirestationFail_Test() {
+    public void deleteFirestation_Fail_Test() {
         // GIVEN
-        Household household = new Household("100 Culver St", "97451", "Culver", new ArrayList<>());
+        Household household = new Household("102 Culver St", "97451", "Culver", new ArrayList<>());
         FirestationModifier firestation = new FirestationModifier();
         firestation.setId(9);
         firestation.setHousehold(household);

@@ -51,8 +51,7 @@ public class FirestationController {
         Firestation addedFirestation = firestationService.saveFirestation(firestationModifier);
 
         if(Objects.isNull(addedFirestation)) {
-            log.error("Mapping adding failed for firestation " + firestationModifier.getId() + " and household "
-                    + firestationModifier.getHousehold().getAddress());
+            log.error("Mapping adding failed for firestation " + firestationModifier.getId() + ", household address is missing");
             return ResponseEntity.noContent().build();
         } else {
             log.info("Mapping was added with success for firestation " + firestationModifier.getId() + " and household "
@@ -73,8 +72,7 @@ public class FirestationController {
         Firestation updatedFirestation = firestationService.saveFirestation(firestationModifier);
 
         if(Objects.isNull(updatedFirestation)) {
-            String message = "Mapping update failed for firestation " + firestationModifier.getId() + " and household "
-                    + firestationModifier.getHousehold().getAddress();
+            String message = "Mapping update failed for firestation " + firestationModifier.getId() + ", household address is missing";
             log.error(message);
             throw new FirestationNotFoundException(message);
         } else {
@@ -93,7 +91,7 @@ public class FirestationController {
             log.error(message);
             throw new FirestationNotFoundException(message);
         } else {
-            log.info("Mapping updated with success for firestation " + firestationModifier.getId() + " and household "
+            log.info("Mapping deleted with success for firestation " + firestationModifier.getId() + " and household "
                     + firestationModifier.getHousehold().getAddress());
         }
     }
