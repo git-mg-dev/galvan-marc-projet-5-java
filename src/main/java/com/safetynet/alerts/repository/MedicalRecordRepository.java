@@ -1,12 +1,10 @@
 package com.safetynet.alerts.repository;
 
 import com.safetynet.alerts.model.*;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Repository
 public class MedicalRecordRepository {
@@ -38,18 +36,27 @@ public class MedicalRecordRepository {
 
     /**
      * Delete medical records of a person
-     * @param medicalRecordModifier medical records to be deleted
+     * @param firstName of the person whose medical record will be deleted
+     * @param lastName of the person whose medical record will be deleted
      * @return true if deleted, else false
      */
-    public boolean deleteMedicalRecord(MedicalRecordModifier medicalRecordModifier) {
-        medicalRecordModifier.setAllergies(new ArrayList<>());
-        medicalRecordModifier.setMedications(new ArrayList<>());
-        MedicalRecord result = saveMedicalRecord(medicalRecordModifier);
+    public boolean deleteMedicalRecord(String firstName, String lastName) {
+        boolean result = false;
 
-        if(result != null) {
-            return (result.getMedications().isEmpty() && result.getAllergies().isEmpty());
-        } else {
-            return false;
+        if(!firstName.isEmpty() && !lastName.isEmpty()) {
+            for (Firestation firestation : dataRepository.getFirestationList()) {
+                for (Household household : firestation.getHouseholdList()) {
+                    for (Person person : household.getPersonList()) {
+                        if (person.getFirstName().equalsIgnoreCase(firstName)
+                                && person.getLastName().equalsIgnoreCase(lastName)) {
+                            person.getMedicalRecord().setAllergies(new ArrayList<>());
+                            person.getMedicalRecord().setMedications(new ArrayList<>());
+                            result = true;
+                        }
+                    }
+                }
+            }
         }
+        return result;
     }
 }

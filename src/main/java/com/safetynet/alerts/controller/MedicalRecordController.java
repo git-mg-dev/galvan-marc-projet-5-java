@@ -61,17 +61,15 @@ public class MedicalRecordController {
     }
 
     @DeleteMapping("medicalRecord")
-    public void deleteMedicalRecord(@RequestBody MedicalRecordModifier medicalRecordModifier) {
-        boolean medicalRecordDeleted = medicalRecordService.deleteMedicalRecord(medicalRecordModifier);
+    public void deleteMedicalRecord(@RequestParam String firstName, @RequestParam String lastName) {
+        boolean medicalRecordDeleted = medicalRecordService.deleteMedicalRecord(firstName, lastName);
 
         if(!medicalRecordDeleted) {
-            String message = "Medical record delete failed, " + medicalRecordModifier.getFirstName() + " "
-                    + medicalRecordModifier.getLastName() + " was not found.";
+            String message = "Medical record delete failed, " + firstName + " " + lastName + " was not found.";
             log.error(message);
             throw new PersonNotFoundException(message);
         } else {
-            log.info("Medical record was deleted with success for " + medicalRecordModifier.getFirstName() + " "
-                    + medicalRecordModifier.getLastName());
+            log.info("Medical record was deleted with success for " + firstName + " " + lastName);
         }
     }
 }

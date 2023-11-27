@@ -47,11 +47,11 @@ public class MedicalRecordServiceTest {
     @Test
     public void deleteMedicalRecord_Test() {
         // GIVEN
-        MedicalRecord medicalRecord = new MedicalRecord(new ArrayList<>(), new ArrayList<>());
-        MedicalRecordModifier medicalRecordModifier = new MedicalRecordModifier("Roger", "Boyd", medicalRecord);
+        String firstName = "Roger";
+        String lastName = "Boyd";
 
         // WHEN
-        boolean result = medicalRecordService.deleteMedicalRecord(medicalRecordModifier);
+        boolean result = medicalRecordService.deleteMedicalRecord(firstName, lastName);
 
         // THEN
         assertTrue(result);
@@ -60,11 +60,11 @@ public class MedicalRecordServiceTest {
     @Test
     public void deleteMedicalRecordFail_Test() {
         // GIVEN
-        MedicalRecord medicalRecord = new MedicalRecord(new ArrayList<>(), new ArrayList<>());
-        MedicalRecordModifier medicalRecordModifier = new MedicalRecordModifier("Bob", "Boyd", medicalRecord);
+        String firstName = "Bob";
+        String lastName = "Boyd";
 
         // WHEN
-        boolean result = medicalRecordService.deleteMedicalRecord(medicalRecordModifier);
+        boolean result = medicalRecordService.deleteMedicalRecord(firstName, lastName);
 
         // THEN
         assertFalse(result);

@@ -36,8 +36,8 @@ public class PersonService {
         return personRepository.updatePerson(person);
     }
 
-    public boolean deletePerson(Person person) {
-        return personRepository.deletePerson(person);
+    public boolean deletePerson(String firstName, String lastName) {
+        return personRepository.deletePerson(firstName, lastName);
     }
 
 }

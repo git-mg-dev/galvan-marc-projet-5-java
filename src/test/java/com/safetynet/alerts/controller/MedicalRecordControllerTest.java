@@ -105,21 +105,12 @@ public class MedicalRecordControllerTest {
     @Test
     public void deleteMedicalRecord_Test() throws Exception {
         // GIVEN
-        String requestBody = "{" +
-                "\"firstName\":\"Tenley\"," +
-                "\"lastName\":\"Boyd\"," +
-                "\"medicalRecord\":" +
-                "{" +
-                "\"allergies\":[\"peanut\"]," +
-                "\"medications\":[\"tetracyclaz:250mg\"]" +
-                "}" +
-                "}";
+        String firstName = "Tenley";
+        String lastName = "Boyd";
 
         // WHEN + THEN
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("http://localhost:8080/medicalRecord")
-                        .content(requestBody)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .delete("http://localhost:8080/medicalRecord?firstName=" + firstName + "&lastName=" + lastName))
                 .andExpect(status().is2xxSuccessful());
 
     }
@@ -127,21 +118,12 @@ public class MedicalRecordControllerTest {
     @Test
     public void deleteMedicalRecord_Fail_Test() throws Exception {
         // GIVEN
-        String requestBody = "{" +
-                "\"firstName\":\"Henry\"," +
-                "\"lastName\":\"Boyd\"," +
-                "\"medicalRecord\":" +
-                "{" +
-                "\"allergies\":[\"peanut\"]," +
-                "\"medications\":[\"tetracyclaz:250mg\"]" +
-                "}" +
-                "}";
+        String firstName = "Henry";
+        String lastName = "Boyd";
 
         // WHEN + THEN
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("http://localhost:8080/medicalRecord")
-                        .content(requestBody)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .delete("http://localhost:8080/medicalRecord?firstName=" + firstName + "&lastName=" + lastName))
                 .andExpect(status().is4xxClientError());
 
     }

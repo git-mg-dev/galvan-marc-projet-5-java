@@ -134,15 +134,16 @@ public class FirestationRepository {
 
     /**
      * Remove a household from a firestation
-     * @param firestationToDelete firestation and household to remove
+     * @param firestationNumber firestation which link to household will be deleted
+     * @param address of household which link to firestation will be deleted
      * @return true if removed, else false
      */
-    public boolean deleteFirestation(FirestationModifier firestationToDelete) {
+    public boolean deleteFirestation(int firestationNumber, String address) {
 
         for (Firestation firestation : dataRepository.getFirestationList()) {
-            if(firestation.getId() == firestationToDelete.getId()) {
+            if(firestation.getId() == firestationNumber) {
                 for(Household household : firestation.getHouseholdList()) {
-                    if(household.getAddress().equalsIgnoreCase(firestationToDelete.getHousehold().getAddress())) {
+                    if(household.getAddress().equalsIgnoreCase(address)) {
                         firestation.getHouseholdList().remove(household);
                         return true;
                     }

@@ -15,7 +15,7 @@ public class MedicalRecordService {
         return medicalRecordRepository.saveMedicalRecord(medicalRecordModifier);
     }
 
-    public boolean deleteMedicalRecord(MedicalRecordModifier medicalRecordModifier) {
-        return medicalRecordRepository.deleteMedicalRecord(medicalRecordModifier);
+    public boolean deleteMedicalRecord(String firstName, String lastName) {
+        return medicalRecordRepository.deleteMedicalRecord(firstName, lastName);
     }
 }

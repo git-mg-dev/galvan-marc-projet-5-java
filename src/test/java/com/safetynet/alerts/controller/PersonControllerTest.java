@@ -154,17 +154,12 @@ public class PersonControllerTest {
     @Test
     public void deletePerson_Test() throws Exception {
         // GIVEN
-        Person personToDelete = new Person("Shawna","Stelzer","ssanw@email.com",
-                "841-874-7784","07/08/1980", new MedicalRecord(new ArrayList<>(), new ArrayList<>()));
-
-        ObjectMapper mapper = new ObjectMapper();
-        String requestBody = mapper.writeValueAsString(personToDelete);
+        String firstName = "Shawna";
+        String lastName = "Stelzer";
 
         // WHEN + THEN
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("http://localhost:8080/person")
-                        .content(requestBody)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .delete("http://localhost:8080/person?firstName=" + firstName + "&lastName=" + lastName))
                 .andExpect(status().is2xxSuccessful());
 
     }
@@ -172,17 +167,12 @@ public class PersonControllerTest {
     @Test
     public void deletePerson_Fail_Test() throws Exception {
         // GIVEN
-        Person personToDelete = new Person("Charles","Stelzer","csanw@email.com",
-                "841-874-7784","07/08/1980", new MedicalRecord(new ArrayList<>(), new ArrayList<>()));
-
-        ObjectMapper mapper = new ObjectMapper();
-        String requestBody = mapper.writeValueAsString(personToDelete);
+        String firstName = "Charles";
+        String lastName = "Stelzer";
 
         // WHEN + THEN
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("http://localhost:8080/person")
-                        .content(requestBody)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .delete("http://localhost:8080/person?firstName=" + firstName + "&lastName=" + lastName))
                 .andExpect(status().is4xxClientError());
 
     }

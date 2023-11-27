@@ -115,16 +115,13 @@ public class FirestationServiceTest {
     @Test
     public void deleteFirestation_Test() {
         // GIVEN
-        Household household = new Household("100 Culver St", "97451", "Culver", new ArrayList<>());
-        FirestationModifier firestation = new FirestationModifier();
-        firestation.setId(9);
-        firestation.setHousehold(household);
-        firestationService.saveFirestation(firestation);
+        String householdAddress = "100 Culver St";
+        int firestationNumber = 9;
 
         // WHEN
-        int numberOfHouseholdBefore = dataRepositoryTest.getNumberOfHouseholdInFirestation(9);
-        boolean result = firestationService.deleteFirestation(firestation);
-        int numberOfHouseholdAfter = dataRepositoryTest.getNumberOfHouseholdInFirestation(9);
+        int numberOfHouseholdBefore = dataRepositoryTest.getNumberOfHouseholdInFirestation(firestationNumber);
+        boolean result = firestationService.deleteFirestation(firestationNumber, householdAddress);
+        int numberOfHouseholdAfter = dataRepositoryTest.getNumberOfHouseholdInFirestation(firestationNumber);
 
         // THEN
         assertTrue(result);
@@ -134,15 +131,13 @@ public class FirestationServiceTest {
     @Test
     public void deleteFirestation_Fail_Test() {
         // GIVEN
-        Household household = new Household("102 Culver St", "97451", "Culver", new ArrayList<>());
-        FirestationModifier firestation = new FirestationModifier();
-        firestation.setId(9);
-        firestation.setHousehold(household);
+        String householdAddress = "102 Culver St";
+        int firestationNumber = 9;
 
         // WHEN
-        int numberOfHouseholdBefore = dataRepositoryTest.getNumberOfHouseholdInFirestation(9);
-        boolean result = firestationService.deleteFirestation(firestation);
-        int numberOfHouseholdAfter = dataRepositoryTest.getNumberOfHouseholdInFirestation(9);
+        int numberOfHouseholdBefore = dataRepositoryTest.getNumberOfHouseholdInFirestation(firestationNumber);
+        boolean result = firestationService.deleteFirestation(firestationNumber, householdAddress);
+        int numberOfHouseholdAfter = dataRepositoryTest.getNumberOfHouseholdInFirestation(firestationNumber);
 
         // THEN
         assertFalse(result);

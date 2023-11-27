@@ -124,10 +124,11 @@ public class PersonServiceTest {
     @Test
     public void deletePerson_Test() {
         // GIVEN
-        Person person = new Person("Eric", "Cadigan", "", "", "", null);
+        String firstName = "Eric";
+        String lastName = "Cadigan";
 
         // WHEN
-        boolean result = personService.deletePerson(person);
+        boolean result = personService.deletePerson(firstName, lastName);
 
         // THEN
         assertTrue(result);
@@ -136,10 +137,11 @@ public class PersonServiceTest {
     @Test
     public void deletePersonFail_Test() {
         // GIVEN
-        Person person = new Person("Georges", "Cadigan", "", "", "", null);
+        String firstName = "Georges";
+        String lastName = "Cadigan";
 
         // WHEN
-        boolean result = personService.deletePerson(person);
+        boolean result = personService.deletePerson(firstName, lastName);
 
         // THEN
         assertFalse(result);

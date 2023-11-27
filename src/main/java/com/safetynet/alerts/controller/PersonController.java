@@ -77,16 +77,16 @@ public class PersonController {
     }
 
     @DeleteMapping("person")
-    public void deletePerson(@RequestBody Person person) {
-        boolean medicalRecordDeleted = personService.deletePerson(person);
+    public void deletePerson(@RequestParam String firstName, @RequestParam String lastName) {
+        boolean medicalRecordDeleted = personService.deletePerson(firstName, lastName);
 
         if(!medicalRecordDeleted) {
-            String message = "Person info delete failed for " + person.getFirstName() + " " + person.getLastName()
+            String message = "Person info delete failed for " + firstName + " " + lastName
                     + ", this person was not found.";
             log.error(message);
             throw new PersonNotFoundException(message);
         } else {
-            log.info("Person info was deleted with success for " + person.getFirstName() + " " + person.getLastName());
+            log.info("Person info was deleted with success for " + firstName + " " + lastName);
         }
     }
 }

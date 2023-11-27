@@ -82,17 +82,15 @@ public class FirestationController {
     }
 
     @DeleteMapping("firestation")
-    public void deleteFirestation(@RequestBody FirestationModifier firestationModifier) {
-        boolean firestationDeleted = firestationService.deleteFirestation(firestationModifier);
+    public void deleteFirestation(@RequestParam int stationNumber, @RequestParam String address) {
+        boolean firestationDeleted = firestationService.deleteFirestation(stationNumber, address);
 
         if(!firestationDeleted) {
-            String message = "Mapping delete failed for firestation " + firestationModifier.getId() + " and household "
-                    + firestationModifier.getHousehold().getAddress();
+            String message = "Mapping delete failed for firestation " + stationNumber + " and household " + address;
             log.error(message);
             throw new FirestationNotFoundException(message);
         } else {
-            log.info("Mapping deleted with success for firestation " + firestationModifier.getId() + " and household "
-                    + firestationModifier.getHousehold().getAddress());
+            log.info("Mapping deleted with success for firestation " + stationNumber + " and household " + address);
         }
     }
 }

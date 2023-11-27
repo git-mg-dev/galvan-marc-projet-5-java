@@ -140,16 +140,17 @@ public class PersonRepository {
 
     /**
      * Remove a person from a household
-     * @param personToDelete person to remove
+     * @param firstName of the person to remove
+     * @param lastName of the person to remove
      * @return true if removed, else false
      */
-    public boolean deletePerson(Person personToDelete) {
+    public boolean deletePerson(String firstName, String lastName) {
 
         for (Firestation firestation : dataRepository.getFirestationList()) {
             for (Household household : firestation.getHouseholdList()) {
                 for (Person person : household.getPersonList()) {
-                    if(person.getFirstName().equalsIgnoreCase(personToDelete.getFirstName()) &&
-                            person.getLastName().equalsIgnoreCase(personToDelete.getLastName())) {
+                    if(person.getFirstName().equalsIgnoreCase(firstName) &&
+                            person.getLastName().equalsIgnoreCase(lastName)) {
                         household.getPersonList().remove(person);
                         return true;
                     }

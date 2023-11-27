@@ -15,6 +15,11 @@ import java.util.*;
 
 @Log4j2
 public class DataLoader {
+    /**
+     * Reads and parses data from a Json file
+     * @param filePath path of file to read
+     * @return a list of firestations including households, people and their medical record
+     */
     public static List<Firestation> LoadDataFromFile(String filePath) {
         Map<Integer, Firestation> firestationMap = new HashMap<>();
         Map<String, Household> householdMap = new HashMap<>();

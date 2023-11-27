@@ -161,19 +161,12 @@ public class FirestationControllerTest {
     @Test
     public void deleteFirestation_Test() throws Exception {
         // GIVEN
-        Household household = new Household("489 Manchester St", "97451", "Culver", new ArrayList<>());
-        FirestationModifier firestationModifier = new FirestationModifier();
-        firestationModifier.setId(4);
-        firestationModifier.setHousehold(household);
-
-        ObjectMapper mapper = new ObjectMapper();
-        String requestBody = mapper.writeValueAsString(firestationModifier);
+        String householdAddress = "489 Manchester St";
+        int firestationNumber = 4;
 
         // WHEN + THEN
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("http://localhost:8080/firestation")
-                        .content(requestBody)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .delete("http://localhost:8080/firestation?stationNumber=" + firestationNumber + "&address=" + householdAddress))
                 .andExpect(status().is2xxSuccessful());
 
     }
@@ -181,19 +174,12 @@ public class FirestationControllerTest {
     @Test
     public void deleteFirestation_Fail_Test() throws Exception {
         // GIVEN
-        Household household = new Household("2 Manchester St", "97451", "Culver", new ArrayList<>());
-        FirestationModifier firestationModifier = new FirestationModifier();
-        firestationModifier.setId(4);
-        firestationModifier.setHousehold(household);
-
-        ObjectMapper mapper = new ObjectMapper();
-        String requestBody = mapper.writeValueAsString(firestationModifier);
+        String householdAddress = "2 Manchester St";
+        int firestationNumber = 4;
 
         // WHEN + THEN
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("http://localhost:8080/firestation")
-                        .content(requestBody)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .delete("http://localhost:8080/firestation?stationNumber=" + firestationNumber + "&address=" + householdAddress))
                 .andExpect(status().is4xxClientError());
 
     }
